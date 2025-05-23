@@ -1,0 +1,19 @@
+.app {
+  padding: 24px;
+  display: flex;
+  justify-content: center;
+}
+body {
+  margin: 0;
+  padding: 0;
+}
+/* Кастомизация (опционально) */
+.ant-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+pre {
+  background: #f6f6f6;
+  padding: 12px;
+  border-radius: 4px;
+}
