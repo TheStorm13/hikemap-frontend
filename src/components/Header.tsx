@@ -1,18 +1,18 @@
-import { Button, Layout, Space, theme, Typography, Avatar, Dropdown, MenuProps } from 'antd';
-import { LoginOutlined, LogoutOutlined, UserOutlined, SettingOutlined } from '@ant-design/icons';
-import { useState } from 'react';
-import { AuthModal } from './AuthModal';
-import { useAuth } from '../service/auth/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import {Avatar, Button, Dropdown, Layout, MenuProps, Space, theme, Typography} from 'antd';
+import {LoginOutlined, LogoutOutlined, SettingOutlined, UserOutlined} from '@ant-design/icons';
+import {useState} from 'react';
+import {AuthModal} from './AuthModal';
+import {useAuth} from '../service/auth/AuthContext';
+import {useNavigate} from 'react-router-dom';
 
-const { Header: AntHeader } = Layout;
-const { Title, Text } = Typography;
+const {Header: AntHeader} = Layout;
+const {Title, Text} = Typography;
 
 export const Header = () => {
     const [authModalVisible, setAuthModalVisible] = useState(false);
     const [activeAuthTab, setActiveAuthTab] = useState<'login' | 'register'>('login');
-    const { state, logout } = useAuth();
-    const { token: { colorBgContainer, boxShadow } } = theme.useToken();
+    const {state, logout} = useAuth();
+    const {token: {colorBgContainer, boxShadow}} = theme.useToken();
     const navigate = useNavigate();
 
     const isAuthenticated = state.status === 'authenticated';
@@ -40,13 +40,13 @@ export const Header = () => {
     const userMenuItems: MenuProps['items'] = [
         {
             key: 'profile',
-            icon: <UserOutlined />,
+            icon: <UserOutlined/>,
             label: 'Profile',
             onClick: () => navigate('/profile'),
         },
         {
             key: 'settings',
-            icon: <SettingOutlined />,
+            icon: <SettingOutlined/>,
             label: 'Settings',
             onClick: () => navigate('/settings'),
         },
@@ -55,7 +55,7 @@ export const Header = () => {
         },
         {
             key: 'logout',
-            icon: <LogoutOutlined />,
+            icon: <LogoutOutlined/>,
             label: 'Logout',
             onClick: handleLogout,
             danger: true,
@@ -79,24 +79,25 @@ export const Header = () => {
                 }}
             >
                 <Space>
-                    <Title level={4} style={{ margin: 0, fontWeight: 600, cursor: 'pointer' }} onClick={() => navigate('/')}>
+                    <Title level={4} style={{margin: 0, fontWeight: 600, cursor: 'pointer'}}
+                           onClick={() => navigate('/')}>
                         HikeMap Route Map
                     </Title>
                 </Space>
 
                 <Space size="middle">
                     {state.status === 'loading' ? (
-                        <Button type="text" loading />
+                        <Button type="text" loading/>
                     ) : isAuthenticated ? (
-                        <Dropdown menu={{ items: userMenuItems }} trigger={['click']} placement="bottomRight">
-                            <Space style={{ cursor: 'pointer' }}>
+                        <Dropdown menu={{items: userMenuItems}} trigger={['click']} placement="bottomRight">
+                            <Space style={{cursor: 'pointer'}}>
                                 <Avatar
                                     size="small"
-                                    icon={<UserOutlined />}
-                                    style={{ backgroundColor: '#87d068' }}
+                                    icon={<UserOutlined/>}
+                                    style={{backgroundColor: '#87d068'}}
                                 />
                                 {user?.username && (
-                                    <Text strong style={{ marginLeft: 8 }}>
+                                    <Text strong style={{marginLeft: 8}}>
                                         {user.username}
                                     </Text>
                                 )}
@@ -106,14 +107,14 @@ export const Header = () => {
                         <>
                             <Button
                                 type="text"
-                                icon={<UserOutlined />}
+                                icon={<UserOutlined/>}
                                 onClick={() => showAuthModal('register')}
                             >
                                 Register
                             </Button>
                             <Button
                                 type="primary"
-                                icon={<LoginOutlined />}
+                                icon={<LoginOutlined/>}
                                 onClick={() => showAuthModal('login')}
                             >
                                 Login

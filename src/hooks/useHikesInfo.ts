@@ -1,11 +1,11 @@
 import {useEffect, useMemo, useState} from 'react';
 import {HikeApi} from '../api/HikeApi.ts';
-import {HikeTypes} from '../types/hike.types.ts';
+import {Hike} from '../types/hike.ts';
 import {FilterOptions} from '../types/FilterOptions.ts';
 import {HikeFilters} from '../types/HikeFilters.ts';
 
-export const getHikesInfo = () => {
-    const [hikes, setHikes] = useState<HikeTypes[]>([]);
+export const useHikesInfo = () => {
+    const [hikes, setHikes] = useState<Hike[]>([]);
     const [filterOptions, setFilterOptions] = useState<FilterOptions>({
         difficulties: [],
         areas: [],
@@ -14,12 +14,10 @@ export const getHikesInfo = () => {
     });
     const [isLoading, setIsLoading] = useState(true);
     const [filters, setFilters] = useState<HikeFilters>({});
-    const [selectedHike, setSelectedHike] = useState<HikeTypes | null>(null);
     const [error, setError] = useState<string | null>(null);
 
-
-    // Мемоизируем контроллер, чтобы не создавать новый инстанс при каждом рендере
     const hikeController = useMemo(() => new HikeApi(), []);
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -67,13 +65,11 @@ export const getHikesInfo = () => {
 
     return {
         hikes,
+        filters,
         filterOptions,
         isLoading,
         error,
-        filters,
-        selectedHike,
         setFilters,
-        setSelectedHike,
         refreshHikes
     };
 };
