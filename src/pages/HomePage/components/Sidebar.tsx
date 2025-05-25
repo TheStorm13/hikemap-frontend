@@ -1,127 +1,114 @@
-import  {useState} from 'react';
-import {HikeTypes} from '../../../types/hike.types.ts';
-import {FilterOptions} from '../../../types/FilterOptions.ts';
+import React, {useCallback} from 'react';
+import {Button, DatePicker, Input, Layout, Select, Space, Typography} from 'antd';
+import {FilterOutlined, SearchOutlined} from '@ant-design/icons';
+import {Hike} from '../../../types/hike';
 import {HikeFilters} from '../../../types/HikeFilters.ts';
-import {Button, Drawer, Input, Layout, Menu, Typography} from 'antd';
-import {Filter} from './Filter.tsx';
-import {FilterOutlined, SearchOutlined} from "@ant-design/icons";
+import {HikeList} from "./listHike/HikeList.tsx";
 
 const {Sider} = Layout;
-const {Text} = Typography;
+const {RangePicker} = DatePicker;
+const {Title} = Typography;
+const {Option} = Select;
 
 interface SidebarProps {
-    hikes: HikeTypes[];
-    filterOptions: FilterOptions;
+    hikes: Hike[];
     filters: HikeFilters;
-    selectedHike: HikeTypes | null;
+    isFiltersVisible: boolean;
+    selectedHike: Hike | null;
     onFiltersChange: (filters: HikeFilters) => void;
-    onSelectHike: (hike: HikeTypes) => void;
+    onSelectHike: (hike: Hike) => void;
+    onToggleFilters: () => void;
 }
 
-export const Sidebar = ({
-                            hikes,
-                            filterOptions,
-                            filters,
-                            selectedHike,
-                            onFiltersChange,
-                            onSelectHike
-                        }: SidebarProps) => {
-    const [isFilterDrawerVisible, setFilterDrawerVisible] = useState(false);
 
-    const toggleFilterDrawer = () => {
-        setFilterDrawerVisible(!isFilterDrawerVisible);
+export const Sidebar: React.FC<SidebarProps> = React.memo(({
+                                                               hikes,
+                                                               filters,
+                                                               isFiltersVisible,
+                                                               selectedHike,
+                                                               onFiltersChange,
+                                                               onSelectHike,
+                                                               onToggleFilters,
+                                                           }) => {
+    const handleSearchChange = useCallback(
+        (e: React.ChangeEvent<HTMLInputElement>) => {
+            onFiltersChange({...filters, search: e.target.value});
+        },
+        [filters, onFiltersChange]
+    );
+    const handleSortChange = (value: string) => {
+        onFiltersChange({...filters, sortBy: value});
     };
 
+    const sortedHikes = React.useMemo(() => {
+        if (!filters.sortBy) return hikes;
+
+        return [...hikes].sort((a, b) => {
+            switch (filters.sortBy) {
+                case 'title':
+                    return a.title.localeCompare(b.title);
+                case 'startDate':
+                    return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+                case 'difficulty':
+                    return Number(a.difficulty) - Number(b.difficulty);
+                default:
+                    return 0;
+            }
+        });
+    }, [hikes, filters.sortBy]);
+
+
     return (
-        <>
-            <Sider
-                width={350}
-                style={{
-                    background: '#fff',
-                    borderRight: '1px solid #f0f0f0',
-                    overflow: 'auto',
-                    height: 'calc(100vh - 64px)',
-                    position: 'sticky',
-                    top: 64,
-                    left: 0,
-                    padding: 16,
-                }}
-            >
-                <Input
-                    placeholder="Поиск походов"
-                    prefix={<SearchOutlined/>}
+        <Sider
+            width={350}
+            collapsedWidth={0}
+            trigger={null}
+            collapsible={false}
+            breakpoint="md"
+            style={{
+                backgroundColor: '#fff', // Белый фон
+                padding: 16, // Общие отступы
+            }}
+        >
+            <Input
+                placeholder="Поиск по названию"
+                prefix={<SearchOutlined/>}
+                allowClear
+                onChange={handleSearchChange}
+                value={filters.search || ''}
+                style={{marginBottom: 16}}
+            />
+            <Space direction="horizontal" size={16}>
+                <Button
+                    icon={<FilterOutlined />}
+                    type={isFiltersVisible ? 'primary' : 'default'}
+                    onClick={onToggleFilters}
+                    style={{ marginBottom: 16 }}
+                >
+                    Фильтры
+                </Button>
+
+                <Select
+                    style={{width: '100%', marginBottom: 16}}
+                    placeholder="Сортировать по"
+                    value={filters.sortBy}
+                    onChange={handleSortChange}
                     allowClear
-                    onChange={(e) => onFiltersChange({...filters, search: e.target.value})}
-                    style={{marginBottom: '16px'}}
-                />
-                <Button
-                    icon={<FilterOutlined/>}
-                    type="primary"
-                    onClick={toggleFilterDrawer}
+
                 >
-                    Открыть фильтры
-                </Button>
-                <Button
-                    icon={<FilterOutlined/>}
-                    type="primary"
-                    onClick={toggleFilterDrawer}
-                >
-                    Сортировать
-                </Button>
+                    <Option value="title">Алфавиту</Option>
+                    <Option value="startDate">Дате начала</Option>
+                    <Option value="difficulty">Сложности</Option>
+                </Select>
+            </Space>
 
-                {/* Количество найденных походов */}
-                <Text style={{display: 'block', margin: '16px 0', fontWeight: 500}}>
-                    Найдено походов: {hikes.length}
-                </Text>
-
-                <Menu
-                    mode="inline"
-                    selectedKeys={selectedHike ? [selectedHike.id.toString()] : []}
-                    style={{
-                        borderRight: 0,
-                        fontSize: '14px',
-                        fontWeight: 500,
-                    }}
-                    items={hikes.map(hike => ({
-                        key: hike.id.toString(),
-                        label: (
-                            <div
-                                style={{
-                                    padding: '12px 0',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    wordWrap: 'break-word', // Перенос длинных слов
-                                    whiteSpace: 'normal',  // Разрешить перенос строк
-                                }}
-                            >
-                                <div style={{fontWeight: 600, color: '#333'}}>{hike.title}</div>
-                                <div style={{fontSize: '12px', color: '#888'}}>
-                                    {new Date(hike.startDate).toLocaleDateString()} • {hike.area} •
-                                    Категория {hike.difficulty}
-                                </div>
-                                {hike.isCategorical && (
-                                    <span style={{fontSize: '12px', color: '#1890ff'}}>Категорийный</span>
-                                )}
-                            </div>
-                        ),
-                        onClick: () => onSelectHike(hike),
-                    }))}
-                />
-            </Sider>
-
-            <Drawer
-                title="Фильтры"
-                placement="left"
-                onClose={toggleFilterDrawer}
-                open={isFilterDrawerVisible}
-                width={350}
-            >
-                <Filter
-                    filters={filters}
-                    filterOptions={filterOptions}
-                    onFiltersChange={onFiltersChange}
-                />
-            </Drawer>
-        </>
+            <HikeList
+                hikes={sortedHikes}
+                selectedHike={selectedHike}
+                onSelectHike={onSelectHike}
+            />
+        </Sider>
     );
-};
+});
+
+Sidebar.displayName = 'Sidebar';

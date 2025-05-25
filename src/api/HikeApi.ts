@@ -1,5 +1,5 @@
 import {HikeFilters} from "../types/HikeFilters.ts";
-import {HikeTypes} from "../types/hike.types.ts";
+import {HikeTypes} from "../types/hike.ts";
 import {FilterOptions} from "../types/FilterOptions.ts";
 
 import api from './api.ts'; // Импортируем настроенный экземпляр axios с интерцепторами
