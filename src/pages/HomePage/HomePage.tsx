@@ -1,8 +1,8 @@
-import React, {useMemo,useCallback, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import {Layout, Spin} from 'antd';
 import {Header} from '../../components/Header.tsx';
 import {Sidebar} from './components/Sidebar.tsx';
-import {useHikesInfo} from '../../hooks/useHikesInfo.ts'
+import {useHikesInfo} from '../../hooks/useHikesInfo.ts';
 import {Hike} from "../../types/hike.ts";
 import {FiltersPanel} from './components/filter/FiltersPanel.tsx';
 import {HikeDetailsPanel} from './components/hikeDetails/HikeDetailsPanel.tsx';
@@ -17,14 +17,14 @@ const HomePage: React.FC = () => {
         hikes,
         filters,
         filterOptions,
-        isLoading,
+        isHikesLoading,
+        error,
         setFilters
     } = useHikesInfo();
 
-    const hikeIds = useMemo(() => hikes.map(hike => hike.id), [hikes]); // Мемоизация hikeIds
+    const hikeIds = useMemo(() => hikes.map(hike => hike.id), [hikes]);
 
     const {tracks, isLoading: isTracksLoading} = useTracksInfo(hikeIds);
-
 
     const handleToggleFilters = useCallback(() => {
         setSelectedHike(null);
@@ -32,19 +32,15 @@ const HomePage: React.FC = () => {
     }, []);
 
     const handleSelectHike = useCallback((hike: Hike | null) => {
-        // Закрываем фильтры в любом случае
         setIsFiltersVisible(false);
 
-        // Если кликаем на уже выбранный поход - закрываем его
         if (selectedHike?.id === hike?.id) {
             setSelectedHike(null);
         } else {
-            // Иначе открываем новый поход
             setSelectedHike(hike);
         }
     }, [selectedHike]);
 
-    if (isLoading) return <Spin size="large"/>;
 
     return (
         <Layout style={{minHeight: '100vh'}}>
@@ -75,19 +71,13 @@ const HomePage: React.FC = () => {
                     />
                 )}
 
-
-                    <Map
-                        tracks={tracks}
-                        selectedHikeId={selectedHike?.id || null}
-
-                    />
-
-
-
+                <Map
+                    tracks={tracks}
+                    selectedHikeId={selectedHike?.id || null}
+                />
             </Layout>
         </Layout>
-    )
-        ;
+    );
 };
 
 export default HomePage;

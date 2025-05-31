@@ -15,7 +15,7 @@ export const useHikesInfo = () => {
         hikeTypes: [],
         organizers: []
     });
-    const [isLoading, setIsLoading] = useState(true);
+    const [isHikesLoading, setIsHikesLoading] = useState(true);
     const [filters, setFilters] = useState<HikeFilters>({});
     const [error, setError] = useState<string | null>(null);
 
@@ -26,7 +26,7 @@ export const useHikesInfo = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            setIsLoading(true);
+            setIsHikesLoading(true);
             setError(null);
 
             try {
@@ -52,15 +52,15 @@ export const useHikesInfo = () => {
                 console.error('Error fetching hikes data:', err);
                 setError('Failed to load hikes data. Please try again later.');
             } finally {
-                setIsLoading(false);
+                setIsHikesLoading(false);
             }
         };
 
         fetchData();
-    }, [filters, hikeApi]);
+    }, [JSON.stringify(filters), hikeApi]);
 
     const refreshHikes = async () => {
-        setIsLoading(true);
+        setIsHikesLoading(true);
         try {
             const hikesData = await hikeApi.getHikes(filters);
             setHikes(hikesData);
@@ -68,7 +68,7 @@ export const useHikesInfo = () => {
             console.error('Error refreshing hikes:', err);
             setError('Failed to refresh hikes data.');
         } finally {
-            setIsLoading(false);
+            setIsHikesLoading(false);
         }
     };
 
@@ -76,7 +76,7 @@ export const useHikesInfo = () => {
         hikes,
         filters,
         filterOptions,
-        isLoading,
+        isHikesLoading,
         error,
         setFilters,
         refreshHikes

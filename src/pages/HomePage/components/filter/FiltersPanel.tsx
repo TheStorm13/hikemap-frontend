@@ -49,7 +49,8 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = React.memo(({
         setLocalFilters(prev => ({...prev, isCategorical: e.target.checked}));
     }, []);
 
-    const clearFilters = () => {
+    const clearFilters = (e: React.MouseEvent) => {
+        e.preventDefault();
         const clearedFilters = {
             search: filters.search,
         };
@@ -57,7 +58,8 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = React.memo(({
         onFiltersChange(clearedFilters);
     };
 
-    const applyFilters = () => {
+    const applyFilters = (e: React.MouseEvent) => {
+        e.preventDefault();
         onFiltersChange(localFilters);
     };
 
