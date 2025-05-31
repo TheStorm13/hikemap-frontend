@@ -1,5 +1,5 @@
 import {HikeFilters} from "../types/HikeFilters.ts";
-import {HikeTypes} from "../types/hike.ts";
+import {Hike} from "../types/hike.ts";
 import {FilterOptions} from "../types/FilterOptions.ts";
 
 import api from './api.ts'; // Импортируем настроенный экземпляр axios с интерцепторами
@@ -24,7 +24,7 @@ export class HikeApi {
 
     private api = api;
 
-    async getHikes(filters?: HikeFilters): Promise<HikeTypes[]> {
+    async getHikes(filters?: HikeFilters): Promise<Hike[]> {
         try {
             const params = {
                 search: filters?.search,
@@ -45,7 +45,7 @@ export class HikeApi {
         }
     }
 
-    async getAllHikes(): Promise<HikeTypes[]> {
+    async getAllHikes(): Promise<Hike[]> {
         try {
             const response = await this.api.get<HikeResponse[]>('/hikes/all');
             return response.data.map((hike: HikeResponse) => this.mapHikeResponse(hike));
@@ -65,7 +65,7 @@ export class HikeApi {
         }
     }
 
-    private mapHikeResponse(hike: HikeResponse): HikeTypes {
+    private mapHikeResponse(hike: HikeResponse): Hike {
         return {
             id: hike.id,
             title: hike.title,

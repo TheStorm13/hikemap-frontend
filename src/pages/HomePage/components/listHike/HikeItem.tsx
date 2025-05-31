@@ -25,9 +25,7 @@ export const HikeItem: React.FC<HikeItemProps> = React.memo(({hike, isSelected, 
                 borderColor: isSelected ? '#1890ff' : '#f0f0f0',
                 cursor: 'pointer',
                 transition: 'border-color 0.3s',
-            }}
-            bodyStyle={{
-                padding: 16
+                padding: 16 // Переносим padding сюда
             }}
         >
             <Space direction="vertical" size={0}>

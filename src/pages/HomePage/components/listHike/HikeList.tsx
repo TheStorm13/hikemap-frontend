@@ -1,5 +1,5 @@
 import React from 'react';
-import {Typography} from 'antd';
+import {Layout, Typography} from 'antd';
 import {HikeItem} from './HikeItem';
 import {Hike} from "../../../../types/hike.ts";
 
@@ -23,7 +23,14 @@ export const HikeList: React.FC<HikeListProps> = React.memo(({
                 Найдено походов: {hikes.length}
             </Text>
 
-            <div style={{display: 'flex', flexDirection: 'column', rowGap: '16px', columnGap: '8px'}}>
+            <Layout style={{
+                display: 'flex',
+                flexDirection: 'column',
+                rowGap: '16px',
+                columnGap: '8px',
+                maxHeight: 'calc(100vh - 200px)', // Ограничение высоты
+                overflowY: 'auto', // Вертикальная прокрутка
+            }}>
                 {hikes.map(hike => (
                     <HikeItem
                         key={hike.id}
@@ -32,7 +39,7 @@ export const HikeList: React.FC<HikeListProps> = React.memo(({
                         onClick={onSelectHike}
                     />
                 ))}
-            </div>
+            </Layout>
         </>
     );
 });

@@ -3,6 +3,9 @@ import {HikeApi} from '../api/HikeApi.ts';
 import {Hike} from '../types/hike.ts';
 import {FilterOptions} from '../types/FilterOptions.ts';
 import {HikeFilters} from '../types/HikeFilters.ts';
+import {AreaApi} from '../api/AreaApi.ts';
+import {HikeTypeApi} from '../api/HikeTypeApi.ts';
+import {UserApi} from '../api/UserApi.ts';
 
 export const useHikesInfo = () => {
     const [hikes, setHikes] = useState<Hike[]>([]);
@@ -16,25 +19,32 @@ export const useHikesInfo = () => {
     const [filters, setFilters] = useState<HikeFilters>({});
     const [error, setError] = useState<string | null>(null);
 
-    const hikeController = useMemo(() => new HikeApi(), []);
-
+    const hikeApi = useMemo(() => new HikeApi(), []);
+    const areaApi = useMemo(() => new AreaApi(), []);
+    const hikeTypeApi = useMemo(() => new HikeTypeApi(), []);
+    const userApi = useMemo(() => new UserApi(), []);
 
     useEffect(() => {
         const fetchData = async () => {
-
             setIsLoading(true);
             setError(null);
 
             try {
                 const [hikesData, optionsData] = await Promise.all([
-                    hikeController.getHikes(filters),
-                    Promise.resolve({
-                        difficulties: [1, 2, 3], // Заглушка с числовыми значениями
-                        areas: ['Горы', 'Леса', 'Поля'],
-                        hikeTypes: ['Однодневный', 'Многодневный'],
-                        organizers: ['Организатор 1', 'Организатор 2']
-                    })// Заглушка
-                    //hikeController.getFilterOptions()
+                    hikeApi.getHikes(filters),
+                    (async () => {
+                        const [areas, hikeTypes, organizers] = await Promise.all([
+                            areaApi.getAllAreas(),
+                            hikeTypeApi.getAllHikeTypes(),
+                            userApi.getAllOrganizer()
+                        ]);
+                        return {
+                            difficulties: [0, 1, 2, 3, 4, 5, 6],
+                            areas: areas.map(area => area.name),
+                            hikeTypes: hikeTypes.map(type => type.name),
+                            organizers: organizers.map(user => user.username)
+                        };
+                    })()
                 ]);
                 setHikes(hikesData);
                 setFilterOptions(optionsData);
@@ -47,13 +57,12 @@ export const useHikesInfo = () => {
         };
 
         fetchData();
-    }, [filters, hikeController]);
+    }, [filters, hikeApi]);
 
-    // Функция для ручного обновления данных
     const refreshHikes = async () => {
         setIsLoading(true);
         try {
-            const hikesData = await hikeController.getHikes(filters);
+            const hikesData = await hikeApi.getHikes(filters);
             setHikes(hikesData);
         } catch (err) {
             console.error('Error refreshing hikes:', err);

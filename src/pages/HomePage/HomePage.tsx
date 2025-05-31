@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useMemo,useCallback, useState} from 'react';
 import {Layout, Spin} from 'antd';
 import {Header} from '../../components/Header.tsx';
 import {Sidebar} from './components/Sidebar.tsx';
@@ -6,6 +6,8 @@ import {useHikesInfo} from '../../hooks/useHikesInfo.ts'
 import {Hike} from "../../types/hike.ts";
 import {FiltersPanel} from './components/filter/FiltersPanel.tsx';
 import {HikeDetailsPanel} from './components/hikeDetails/HikeDetailsPanel.tsx';
+import {Map} from './components/map/Map.tsx';
+import {useTracksInfo} from "../../hooks/useTracksInfo.ts";
 
 const HomePage: React.FC = () => {
     const [selectedHike, setSelectedHike] = useState<Hike | null>(null);
@@ -18,6 +20,11 @@ const HomePage: React.FC = () => {
         isLoading,
         setFilters
     } = useHikesInfo();
+
+    const hikeIds = useMemo(() => hikes.map(hike => hike.id), [hikes]); // Мемоизация hikeIds
+
+    const {tracks, isLoading: isTracksLoading} = useTracksInfo(hikeIds);
+
 
     const handleToggleFilters = useCallback(() => {
         setSelectedHike(null);
@@ -67,6 +74,14 @@ const HomePage: React.FC = () => {
                         onClose={() => handleSelectHike(null)}
                     />
                 )}
+
+
+                    <Map
+                        tracks={tracks}
+                        selectedHikeId={selectedHike?.id || null}
+
+                    />
+
 
 
             </Layout>
