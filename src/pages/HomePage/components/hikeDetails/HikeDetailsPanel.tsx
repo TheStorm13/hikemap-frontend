@@ -1,4 +1,7 @@
-import React, {useState,useCallback} from 'react';
+import React, {useEffect, useState} from 'react';
+import {useAuth} from "../../../../service/auth/AuthContext.tsx";
+import {LikeApi} from "../../../../api/LikeApi.ts";
+import {FileApi} from "../../../../api/FilesApi.ts";
 import {Button, Card, Divider, Space, Tag, Typography} from 'antd';
 import {
     ArrowLeftOutlined,
@@ -19,19 +22,51 @@ interface HikeDetailsProps {
 }
 
 export const HikeDetailsPanel: React.FC<HikeDetailsProps> = React.memo(({hike, onClose}) => {
+    const {state} = useAuth();
+    const likeApi = new LikeApi();
+    const fileApi = new FileApi();
+
+
     const [liked, setLiked] = useState(false);
 
+    useEffect(() => {
+        const checkIfLiked = async () => {
+            try {
+                console.log(`Статус перед отправкой лайка: ${state.status}`);
+                const likedHikes = await likeApi.getLikedHikes();
+                const isLiked = likedHikes.some(likedHike => likedHike.id === hike.id);
+                setLiked(isLiked);
+            } catch (error) {
+                console.error('Ошибка при проверке лайков:', error);
+            }
+        };
 
-    const handleLike = () => {
-        setLiked(!liked);
+        checkIfLiked();
+    }, [hike.id]);
+
+    const handleLike = async () => {
+        try {
+            await likeApi.likeHike(hike.id);
+            setLiked(!liked); // Обновляем состояние после успешного запроса
+        } catch (error) {
+            console.error('Ошибка при отправке лайка:', error);
+        }
     };
 
-    const handleDownloadReport = () => {
-        console.log('Скачать отчет');
+    const handleDownloadReport = async () => {
+        try {
+            await fileApi.downloadFile(hike.id, 'PDF');
+        } catch (error) {
+            console.error('Ошибка при скачивании отчета:', error);
+        }
     };
 
-    const handleDownloadTrack = () => {
-        console.log('Скачать трек');
+    const handleDownloadTrack = async () => {
+        try {
+            await fileApi.downloadFile(hike.id, 'GPX');
+        } catch (error) {
+            console.error('Ошибка при скачивании трека:', error);
+        }
     };
 
     return (
@@ -50,7 +85,7 @@ export const HikeDetailsPanel: React.FC<HikeDetailsProps> = React.memo(({hike, o
                 position: 'initial',
                 width: '25vw', // 1/4 ширины окна
                 overflow: 'auto', // Прокрутка, если содержимое превышает maxHeight
-        }}
+            }}
         >
             <Title level={2}>{hike.title}</Title>
 
@@ -87,21 +122,26 @@ export const HikeDetailsPanel: React.FC<HikeDetailsProps> = React.memo(({hike, o
             <Divider/>
             <Space>
                 <Button
-                    type='default'
+                    type={liked ? 'primary' : 'default'}
+                    danger={liked}
                     icon={<LikeOutlined/>}
                     onClick={handleLike}
+                    disabled={state.status !== 'authenticated'} // Кнопка доступна только при авторизации
                 >
-                     Лайк
+                    Лайк
                 </Button>
                 <Button
                     icon={<DownloadOutlined/>}
                     onClick={handleDownloadReport}
+                    disabled={!hike.reportPdfPath}
+
                 >
                     Скачать отчет
                 </Button>
                 <Button
                     icon={<DownloadOutlined/>}
                     onClick={handleDownloadTrack}
+                    disabled={!hike.trackGpxPath || hike.trackGpxPath.trim() === ''}
                 >
                     Скачать трек
                 </Button>

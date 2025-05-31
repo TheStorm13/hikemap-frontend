@@ -41,12 +41,13 @@ export class AreaApi {
 
             const response = await this.api.get<AreaResponse>(`/hikes/areas/${id}`);
             return response.data;
-        } catch (error) {
-            if (error.response?.status === 404) {
-                throw new Error(`Регион с ID ${id} не найден`);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.error('Error fetching areas:', error.message);
+            } else {
+                console.error('Unknown error fetching areas:', error);
             }
-            console.error(`Error fetching area with id ${id}:`, error);
-            throw new Error('Не удалось загрузить информацию о регионе');
+            throw new Error('Не удалось загрузить список регионов');
         }
     }
 

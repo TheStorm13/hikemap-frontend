@@ -1,6 +1,5 @@
 import {useEffect, useMemo, useState} from 'react';
-import {TrackApi} from '../api/TrackApi.ts';
-import {GeoJsonFeature} from '../api/TrackApi.ts';
+import {GeoJsonFeature, TrackApi} from '../api/TrackApi.ts';
 
 export const useTracksInfo = (hikeIds: number[]) => {
     const [tracks, setTracks] = useState<GeoJsonFeature[]>([]); // Указан тип GeoJsonFeature[]

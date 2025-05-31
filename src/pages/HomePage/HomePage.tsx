@@ -1,5 +1,5 @@
 import React, {useCallback, useMemo, useState} from 'react';
-import {Layout, Spin} from 'antd';
+import {Layout} from 'antd';
 import {Header} from '../../components/Header.tsx';
 import {Sidebar} from './components/Sidebar.tsx';
 import {useHikesInfo} from '../../hooks/useHikesInfo.ts';
@@ -17,14 +17,14 @@ const HomePage: React.FC = () => {
         hikes,
         filters,
         filterOptions,
-        isHikesLoading,
-        error,
+
         setFilters
     } = useHikesInfo();
 
     const hikeIds = useMemo(() => hikes.map(hike => hike.id), [hikes]);
 
-    const {tracks, isLoading: isTracksLoading} = useTracksInfo(hikeIds);
+    const {tracks} = useTracksInfo(hikeIds);
+
 
     const handleToggleFilters = useCallback(() => {
         setSelectedHike(null);
@@ -72,8 +72,10 @@ const HomePage: React.FC = () => {
                 )}
 
                 <Map
+                    hikes={hikes}
                     tracks={tracks}
                     selectedHikeId={selectedHike?.id || null}
+                    handleSelectHike={handleSelectHike}
                 />
             </Layout>
         </Layout>

@@ -7,9 +7,8 @@ export interface GeoJsonFeature {
         type: string;
         coordinates: number[][];
     };
-    properties: {
-        [key: string]: any;
-    };
+    properties: Record<string, any>;
+
 }
 
 interface HikeGeoJsonResponse {
@@ -29,7 +28,7 @@ export class TrackApi {
             const response = await this.api.get<HikeGeoJsonResponse>(
                 '/tracks/geojson',
                 {
-                    params: { hikeIds: hikeIds.join(',') }, // Преобразуем массив в строку
+                    params: {hikeIds: hikeIds.join(',')}, // Преобразуем массив в строку
                     headers: {
                         'Content-Type': 'application/json'
                     }

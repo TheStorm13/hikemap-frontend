@@ -1,13 +1,11 @@
 import React, {useCallback} from 'react';
-import {Button, DatePicker, Input, Layout, Select, Space, Typography} from 'antd';
+import {Button, Input, Layout, Select, Space} from 'antd';
 import {FilterOutlined, SearchOutlined} from '@ant-design/icons';
 import {Hike} from '../../../types/hike';
 import {HikeFilters} from '../../../types/HikeFilters.ts';
 import {HikeList} from "./listHike/HikeList.tsx";
 
 const {Sider} = Layout;
-const {RangePicker} = DatePicker;
-const {Title} = Typography;
 const {Option} = Select;
 
 interface SidebarProps {
@@ -36,7 +34,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(({
         },
         [filters, onFiltersChange]
     );
-    const handleSortChange = (value: string) => {
+    const handleSortChange = (value: "title" | "startDate" | "difficulty" | undefined) => {
         onFiltersChange({...filters, sortBy: value});
     };
 
@@ -80,10 +78,10 @@ export const Sidebar: React.FC<SidebarProps> = React.memo(({
             />
             <Space direction="horizontal" size={16}>
                 <Button
-                    icon={<FilterOutlined />}
+                    icon={<FilterOutlined/>}
                     type={isFiltersVisible ? 'primary' : 'default'}
                     onClick={onToggleFilters}
-                    style={{ marginBottom: 16 }}
+                    style={{marginBottom: 16}}
                 >
                     Фильтры
                 </Button>

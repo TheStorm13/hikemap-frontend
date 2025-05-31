@@ -28,8 +28,8 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = React.memo(({
     useEffect(() => {
         setLocalFilters(filters);
     }, [filters]);
-
-    const handleDateChange = useCallback((dateStrings: [string, string]) => {
+    //@ts-ignore
+    const handleDateChange = useCallback((_, dateStrings: [string, string]) => {
         setLocalFilters(prev => ({
             ...prev,
             startDateFrom: dateStrings[0],
@@ -71,7 +71,7 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = React.memo(({
                     <span>Фильтры</span>
                     <Button
                         type="text"
-                        icon={<CloseOutlined />}
+                        icon={<CloseOutlined/>}
                         onClick={onClose}
                     />
                 </Space>

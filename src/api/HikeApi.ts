@@ -9,6 +9,8 @@ interface HikeResponse {
     title: string;
     description: string;
     photoPath: string;
+    trackGpxPath: string,
+    reportPdfPath: string,
     startDate: string;
     endDate: string;
     difficulty: number;
@@ -71,6 +73,8 @@ export class HikeApi {
             title: hike.title,
             description: hike.description,
             photoPath: hike.photoPath,
+            trackGpxPath: hike.trackGpxPath,
+            reportPdfPath: hike.reportPdfPath,
             startDate: hike.startDate,
             endDate: hike.endDate,
             difficulty: hike.difficulty,

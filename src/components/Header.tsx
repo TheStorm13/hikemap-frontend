@@ -1,5 +1,5 @@
 import {Avatar, Button, Dropdown, Layout, MenuProps, Space, theme, Typography} from 'antd';
-import {LoginOutlined, LogoutOutlined, SettingOutlined, UserOutlined} from '@ant-design/icons';
+import {LoginOutlined, LogoutOutlined, UserOutlined} from '@ant-design/icons';
 import {useState} from 'react';
 import {AuthModal} from './AuthModal';
 import {useAuth} from '../service/auth/AuthContext';
@@ -38,18 +38,18 @@ export const Header = () => {
     };
 
     const userMenuItems: MenuProps['items'] = [
-        {
-            key: 'profile',
-            icon: <UserOutlined/>,
-            label: 'Profile',
-            onClick: () => navigate('/profile'),
-        },
-        {
-            key: 'settings',
-            icon: <SettingOutlined/>,
-            label: 'Settings',
-            onClick: () => navigate('/settings'),
-        },
+        // {
+        //     key: 'profile',
+        //     icon: <UserOutlined/>,
+        //     label: 'Profile',
+        //     onClick: () => navigate('/profile'),
+        // },
+        // {
+        //     key: 'settings',
+        //     icon: <SettingOutlined/>,
+        //     label: 'Settings',
+        //     onClick: () => navigate('/settings'),
+        // },
         {
             type: 'divider',
         },
@@ -110,14 +110,14 @@ export const Header = () => {
                                 icon={<UserOutlined/>}
                                 onClick={() => showAuthModal('register')}
                             >
-                                Register
+                                Регистрация
                             </Button>
                             <Button
                                 type="primary"
                                 icon={<LoginOutlined/>}
                                 onClick={() => showAuthModal('login')}
                             >
-                                Login
+                                Войти
                             </Button>
                         </>
                     )}

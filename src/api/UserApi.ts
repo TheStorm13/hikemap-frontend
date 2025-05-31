@@ -24,7 +24,7 @@ export class UserApi {
         try {
             const response = await this.api.get<UserResponse>(`/users/${id}`);
             return response.data;
-        } catch (error) {
+        } catch (error: any) {
             if (error.response?.status === 404) {
                 throw new Error('Пользователь не найден');
             }
@@ -51,7 +51,7 @@ export class UserApi {
             );
 
             return response.data;
-        } catch (error) {
+        } catch (error: any) {
             if (error.response?.status === 400) {
                 throw new Error('Некорректные данные для обновления');
             }
@@ -81,8 +81,8 @@ export class UserApi {
         }
     }
 
-    async getAllOrganizer(): Promise<UserResponse[]>{
-        try{
+    async getAllOrganizer(): Promise<UserResponse[]> {
+        try {
             const response = await this.api.get<UserResponse[]>('/users/organizers');
             return response.data;
         } catch (error) {

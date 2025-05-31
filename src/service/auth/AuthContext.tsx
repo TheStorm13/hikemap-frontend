@@ -32,7 +32,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}
 
         // Listen for storage changes
         const handleStorageChange = (event: StorageEvent) => {
-            if (event.key && ['access_token', 'refresh_token'].includes(event.key)) {
+            if (event.key && ['accsessToken', 'refreshToken'].includes(event.key)) {
                 authService.checkAuth();
             }
         };
