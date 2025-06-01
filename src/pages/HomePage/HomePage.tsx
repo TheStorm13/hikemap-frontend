@@ -72,10 +72,7 @@ const HomePage: React.FC = () => {
                 )}
 
                 <Map
-                    hikes={hikes}
                     tracks={tracks}
-                    selectedHikeId={selectedHike?.id || null}
-                    handleSelectHike={handleSelectHike}
                 />
             </Layout>
         </Layout>
