@@ -1,36 +1,27 @@
-# Этап сборки
+# Stage 1: Build
 FROM node:18-alpine AS builder
-
+# Set working directory
 WORKDIR /app
-
-# Копируем файлы зависимостей сначала для кэширования
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-
-RUN if [ -f yarn.lock ]; then \
-      yarn --frozen-lockfile; \
-    elif [ -f package-lock.json ]; then \
-      npm install --legacy-peer-deps; \
-    elif [ -f pnpm-lock.yaml ]; then \
-      yarn global add pnpm && pnpm i --frozen-lockfile --strict-peer-dependencies=false; \
-    else \
-      echo "Lockfile not found." && exit 1; \
-    fi
-
-# Копируем остальные файлы и собираем приложение
+# Install only dependencies (layer caching)
+COPY package.json ./
+COPY package-lock.json ./
+# Install dependencies
+RUN npm ci --legacy-peer-deps
+# Copy the rest of the source code
 COPY . .
+# Build the Vite app
 RUN npm run build
 
-# Этап запуска (используем lightweight HTTP-сервер)
-FROM node:18-alpine
-
+# Stage 2: Runtime
+FROM node:18-alpine AS runner
+# Use non-root user for security
+ENV NODE_ENV=production
 WORKDIR /app
-
-# Устанавливаем serve для раздачи статики
+# Install lightweight static server
 RUN npm install -g serve
-
-# Копируем собранное приложение из builder
-COPY --from=builder /app/dist /app/dist
-
-# Указываем порт и запускаем сервер
+# Copy built app from builder stage
+COPY --from=builder /app/dist ./dist
+# Expose port (optional, for documentation)
 EXPOSE 3000
-CMD ["serve", "-s", "dist", "-l", "3000"]
+# Set entrypoint
+ENTRYPOINT ["serve", "-s", "dist", "-l", "3000"]
