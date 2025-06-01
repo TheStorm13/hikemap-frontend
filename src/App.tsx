@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import HomePage from './pages/HomePage/HomePage.tsx';
+import ErrorPage from "./pages/ErrorPage.tsx";
 
 const App: React.FC = () => {
 
@@ -14,6 +15,7 @@ const App: React.FC = () => {
         <Router>
             <Routes>
                 <Route path="/" element={<HomePage/>}/>
+                <Route path="/error" element={<ErrorPage />} />
             </Routes>
         </Router>
     );

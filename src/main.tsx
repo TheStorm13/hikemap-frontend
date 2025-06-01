@@ -4,11 +4,14 @@ import App from './App.tsx'
 //@ts-ignore
 import './index.css'
 import {AuthProvider} from "./service/auth/AuthContext.tsx";
+import {ErrorBoundary} from "./service/ErrorBoundary.tsx";
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
-        <AuthProvider>
-            <App/>
-        </AuthProvider>
+        <ErrorBoundary>
+            <AuthProvider>
+                <App/>
+            </AuthProvider>
+        </ErrorBoundary>
     </StrictMode>,
 )

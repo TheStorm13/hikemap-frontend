@@ -1,27 +1,36 @@
-import React from 'react';
+// components/ErrorBoundary.tsx
+//@ts-ignore
+import React, { Component, ErrorInfo, ReactNode } from "react";
+import { Navigate } from "react-router-dom";
 
-interface ErrorBoundaryProps {
-    fallback: string;
-    children: React.ReactNode;
+interface Props {
+    children: ReactNode;
 }
 
-class ErrorBoundary extends React.Component<ErrorBoundaryProps> {
-    state = {hasError: false};
+interface State {
+    hasError: boolean;
+}
 
-    static getDerivedStateFromError() {
-        return {hasError: true};
+export class ErrorBoundary extends Component<Props, State> {
+    constructor(props: Props) {
+        super(props);
+        this.state = { hasError: false };
     }
 
-    componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-        console.error("ErrorBoundary caught an error:", error, errorInfo);
+    static getDerivedStateFromError(_: Error): State {
+        return { hasError: true };
+    }
+
+    componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+        console.error("Uncaught error:", error, errorInfo);
+        // Здесь можно логировать ошибку в систему мониторинга
     }
 
     render() {
         if (this.state.hasError) {
-            return <div>{this.props.fallback}</div>;
+            return <Navigate to="/error" replace />;
         }
+
         return this.props.children;
     }
 }
-
-export default ErrorBoundary;
