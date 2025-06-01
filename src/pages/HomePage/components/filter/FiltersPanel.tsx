@@ -80,7 +80,7 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = React.memo(({
                 position: 'initial',
                 margin: 16,
                 width: '25vw', // 1/4 ширины окна
-                maxHeight: '60vh', // Динамическая высота
+                maxHeight: '80vh', // Динамическая высота
                 overflow: 'auto', // Прокрутка, если содержимое превышает maxHeight
             }}
         >
