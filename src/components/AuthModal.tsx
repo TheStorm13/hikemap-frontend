@@ -62,13 +62,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
             if (activeTab === 'login') {
                 await login(values.email, values.password);
-                message.success('Login successful!');
+                message.success('Успешный вход!');
                 onLoginSuccess?.();
                 onClose();
             } else {
                 await register(values.username, values.email, values.password);
-                message.success('Registration successful! Please log in.');
-                setActiveTab('login');
+                message.success('Регистрация прошла успешно!');
                 form.resetFields(['email', 'password']);
             }
         } catch (err: any) {
@@ -82,7 +81,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
     return (
         <Modal
-            title="Authentication"
+            title="Авторизация"
             open={visible}
             onCancel={onClose}
             footer={null}
@@ -99,7 +98,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 animated
                 tabBarStyle={{marginBottom: 24}}
             >
-                <TabPane tab="Login" key="login" disabled={loading}>
+                <TabPane tab="Войти" key="login" disabled={loading}>
                     <Form
                         form={form}
                         onFinish={handleSubmit}
@@ -108,30 +107,30 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     >
                         <Form.Item
                             name="email"
-                            label="Email"
+                            label="Почта"
                             rules={[
-                                {required: true, message: 'Please enter your email'},
-                                {type: 'email', message: 'Please enter a valid email'},
+                                {required: true, message: 'Введите вашу почту'},
+                                {type: 'email', message: 'Введите корректный почту'},
                             ]}
                         >
                             <Input
                                 prefix={<MailOutlined/>}
-                                placeholder="Email"
+                                placeholder="Почта"
                                 autoComplete="email"
                                 disabled={loading}
                             />
                         </Form.Item>
                         <Form.Item
                             name="password"
-                            label="Password"
+                            label="Пароль"
                             rules={[
-                                {required: true, message: 'Please enter your password'},
-                                {min: 6, message: 'Password must be at least 6 characters'},
+                                {required: true, message: 'Пожалуйста, введите пароль'},
+                                {min: 6, message: 'Минимум 6 символов'},
                             ]}
                         >
                             <Input.Password
                                 prefix={<LockOutlined/>}
-                                placeholder="Password"
+                                placeholder="Пароль"
                                 autoComplete="current-password"
                                 disabled={loading}
                             />
@@ -144,77 +143,77 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                                 block
                                 size="large"
                             >
-                                Log in
+                                Войти
                             </Button>
                         </Form.Item>
                     </Form>
                 </TabPane>
 
-                <TabPane tab="Register" key="register" disabled={loading}>
+                <TabPane tab="Регистрация" key="register" disabled={loading}>
                     <Form form={form} onFinish={handleSubmit} layout="vertical">
                         <Form.Item
                             name="username"
-                            label="Username"
+                            label="Имя пользователя"
                             rules={[
-                                {required: true, message: 'Please choose a username'},
-                                {min: 3, message: 'Username must be at least 3 characters'},
-                                {max: 20, message: 'Username cannot exceed 20 characters'},
+                                {required: true, message: 'Пожалуйста, введите имя пользователя'},
+                                {min: 3, message: 'Имя пользователя должно быть минимум 3 символа'},
+                                {max: 100, message: 'Имя пользователя не может превышать 100 символов'},
                                 {
                                     pattern: /^[a-zA-Z0-9_]+$/,
-                                    message: 'Only letters, numbers and underscores',
+                                    message: 'Имя пользователя может содержать только буквы, цифры и подчеркивания',
                                 },
                             ]}
                         >
                             <Input
                                 prefix={<UserOutlined/>}
-                                placeholder="Username"
+                                placeholder="Имя пользователя"
                                 autoComplete="username"
                                 disabled={loading}
                             />
                         </Form.Item>
                         <Form.Item
                             name="email"
-                            label="Email"
+                            label="Почта"
                             rules={[
-                                {required: true, message: 'Please enter your email'},
-                                {type: 'email', message: 'Please enter a valid email'},
+                                {required: true, message: 'Пожалуйста, введите почту'},
+                                {type: 'email', message: 'Введите корректный почту'},
                             ]}
                         >
                             <Input
                                 prefix={<MailOutlined/>}
-                                placeholder="Email"
+                                placeholder="Почта"
                                 autoComplete="email"
                                 disabled={loading}
                             />
                         </Form.Item>
                         <Form.Item
                             name="password"
-                            label="Password"
+                            label="Пароль"
                             rules={[
-                                {required: true, message: 'Please enter a password'},
-                                {min: 6, message: 'Minimum 6 characters'},
+                                {required: true, message: 'Пожалуйста, введите пароль'},
+                                {min: 6, message: 'Минимум 6 символов'},
                             ]}
                             hasFeedback
                         >
                             <Input.Password
                                 prefix={<LockOutlined/>}
-                                placeholder="Password"
+                                placeholder="Пароль"
                                 autoComplete="new-password"
                                 disabled={loading}
                             />
                         </Form.Item>
                         <Form.Item
                             name="confirmPassword"
-                            label="Confirm Password"
+                            label="Подтверждение пароля"
                             dependencies={['password']}
                             rules={[
-                                {required: true, message: 'Please confirm your password'},
+                                {required: true, message: 'Пожалуйста, подтвердите пароль'},
                                 ({getFieldValue}) => ({
                                     validator(_, value) {
                                         if (!value || getFieldValue('password') === value) {
                                             return Promise.resolve();
                                         }
-                                        return Promise.reject(new Error('Passwords do not match'));
+                                        return Promise.reject(new Error('Пароли не совпадают'));
                                     },
                                 }),
                             ]}
@@ -222,7 +221,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                         >
                             <Input.Password
                                 prefix={<LockOutlined/>}
-                                placeholder="Confirm Password"
+                                placeholder="Подтверждение пароля"
                                 disabled={loading}
                             />
                         </Form.Item>
@@ -234,7 +233,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                                 block
                                 size="large"
                             >
-                                Register
+                                Зарегистрироваться
                             </Button>
                         </Form.Item>
                     </Form>
