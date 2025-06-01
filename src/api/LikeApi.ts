@@ -14,7 +14,7 @@ export class LikeApi {
             await this.api.put(`/likes/${hikeId}`);
         } catch (error) {
             console.error(`Error liking hike with id ${hikeId}:`, error);
-            throw error;
+            throw new Error("Ошибка при добавлении лайка" + error);
         }
     }
 
@@ -25,7 +25,7 @@ export class LikeApi {
             return response.data;
         } catch (error) {
             console.error('Error fetching liked hikes:', error);
-            throw error;
+            throw new Error("Ошибка при получении данных о лайке о походе" + error);
         }
     }
 }
